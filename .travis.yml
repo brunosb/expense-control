@@ -1,0 +1,12 @@
+language: java
+jdk: oraclejdk8
+env:
+  - DB=expensecontrol
+
+before_script:
+  - psql -c 'create database expensecontrol;' -U postgres
+
+services:
+  - postgresql
+script:
+  - ./mvnw clean install
