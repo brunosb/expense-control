@@ -1,8 +1,6 @@
 package com.barbosa.dev.expensecontrol.config;
 
-import com.barbosa.dev.expensecontrol.security.CustomUserDetailsService;
-import com.barbosa.dev.expensecontrol.security.JwtAuthenticationEntryPoint;
-import com.barbosa.dev.expensecontrol.security.JwtAuthenticationFilter;
+import com.barbosa.dev.expensecontrol.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,18 +25,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    private UserAuthenticationProvider userAuthenticationProvider;
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
-    }
+    @Autowired
+    private AcessoNegado acessoNegado;
+
+    @Autowired
+    private AcessoPermitido acessoPermitido;
+
+    @Autowired
+    private FalhaAcesso falhaAcesso;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
+        authenticationManagerBuilder.authenticationProvider(userAuthenticationProvider);
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -51,23 +47,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
                 .csrf().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedHandler)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .authorizeRequests()
                 .antMatchers("/",
                         "/favicon.ico",
@@ -79,18 +62,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/api/auth/**")
-                .permitAll()
-                .antMatchers("/integracao/**").hasAuthority("ROLE_INTEGRACAO")
-                /*.antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()*/;
-
-        // Add our custom JWT security filter
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login").permitAll()
+                .usernameParameter("login")
+                .passwordParameter("senha")
+                .successHandler(acessoPermitido)
+                .failureHandler(falhaAcesso)
+                .and()
+                .logout().deleteCookies("JSESSIONID").clearAuthentication(true).invalidateHttpSession(true).logoutUrl("/logout").permitAll()
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true)
+                .and()
+                .exceptionHandling().accessDeniedHandler(acessoNegado);
 
     }
 }

@@ -19,6 +19,7 @@ import javax.persistence.Enumerated;
 @EqualsAndHashCode(callSuper = false)
 public class Permission extends BaseEntity<Long> {
 
+    private static final long serialVersionUID = 2377503146917744119L;
     @Enumerated(EnumType.STRING)
     @NaturalId
     @Column(length = 60)

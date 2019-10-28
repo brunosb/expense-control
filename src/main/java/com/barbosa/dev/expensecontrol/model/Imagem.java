@@ -20,7 +20,6 @@ import java.sql.Blob;
 public class Imagem extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 8836432164111627388L;
-
     @Column(nullable = false)
     private String nome;
 

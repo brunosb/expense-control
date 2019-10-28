@@ -18,6 +18,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 public class UserSystem extends BaseEntity<Long> {
 
+    private static final long serialVersionUID = -1475669764106632744L;
     @Column(unique = true)
     private String login;
 
