@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<nav th:fragment="menu-sidebar" class="main-menu">
+    <header>Menu <span>X</span></header>
+    <ol>
+        <li class="menu-item"><a href=""><i class="menu-item-icon fa fa-home fa-2x"></i><span class="menu-item-text">Home</span></a></li>
+        <li class="menu-item"><a href=""><i class="menu-item-icon fa fa-home fa-2x"></i><span class="menu-item-text">Banco</span></a></li>
+        <li class="menu-item"><a href=""><i class="menu-item-icon fa fa-home fa-2x"></i><span class="menu-item-text">Cartão</span></a></li>
+        <li class="menu-item">
+            <a href=""><i class="menu-item-icon fa fa-home fa-2x"></i><span class="menu-item-text">Relatorios</span></a>
+            <ol class="menu-sub-item">
+                <li class="menu-item"><a href=""><i class="menu-item-icon fa fa-home fa-2x"></i><span class="menu-item-text">Mensal</span></a></li>
+                <li class="menu-item"><a href=""><i class="menu-item-icon fa fa-home fa-2x"></i><span class="menu-item-text">Anual</span></a></li>
+            </ol>
+        </li>
+        <li class="menu-item"><a href=""><i class="menu-item-icon fa fa-home fa-2x"></i><span class="menu-item-text">Configuração</span></a></li>
+    </ol>
+    <footer>
+        <button class="show-hide-menu" aria-label="Toggle">Toggle</button>
+    </footer>
+</nav>
+</body>
+</html>

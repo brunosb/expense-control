@@ -52,12 +52,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/",
+                .antMatchers(
                         "/favicon.ico",
                         "/**/*.png",
                         "/**/*.gif",
                         "/**/*.svg",
                         "/**/*.jpg",
+                        "/**/*.jpeg",
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js")
@@ -67,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login").permitAll()
                 .usernameParameter("login")
-                .passwordParameter("senha")
+                .passwordParameter("password")
                 .successHandler(acessoPermitido)
                 .failureHandler(falhaAcesso)
                 .and()
