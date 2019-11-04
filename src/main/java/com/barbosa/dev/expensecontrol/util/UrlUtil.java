@@ -5,4 +5,6 @@ package com.barbosa.dev.expensecontrol.util;
  */
 public class UrlUtil {
 
+    public static final String BANCO = "/banco";
+
 }
